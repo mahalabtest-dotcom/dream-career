@@ -65,32 +65,41 @@ const CareerCardFace = forwardRef(function CareerCardFace({ name, avatarUrl, gen
           background: CARD.panel,
           backgroundImage: `${BLOOMS}, ${CARD.panel}`,
           display: 'flex',
-          gap: 22,
-          padding: 24,
+          gap: 26,
+          padding: 26,
           color: CARD.white,
         }}
       >
-        {/* Left: avatar with gradient ring + glow, and a tag */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+        {/* Left: avatar (vertically centered) with gradient ring + glow, and a tag */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 12,
+            flexShrink: 0,
+          }}
+        >
           <div
             style={{
-              padding: 3,
-              borderRadius: 18,
+              padding: 4,
+              borderRadius: 20,
               background: CARD.border,
-              boxShadow: '0 0 22px rgba(0,183,255,0.35)',
+              boxShadow: '0 0 26px rgba(0,183,255,0.4)',
             }}
           >
-            <div style={{ height: 150, width: 118, overflow: 'hidden', borderRadius: 15, background: '#0A1730' }}>
+            <div style={{ height: 218, width: 168, overflow: 'hidden', borderRadius: 16, background: '#0A1730' }}>
               <img src={avatarUrl} alt={`${name}'s avatar`} style={{ height: '100%', width: '100%', ...FACE_CROP }} />
             </div>
           </div>
           <span
             style={{
               borderRadius: 999,
-              padding: '3px 14px',
-              fontSize: 10,
+              padding: '5px 20px',
+              fontSize: 12,
               fontWeight: 800,
-              letterSpacing: 1.5,
+              letterSpacing: 2,
               color: '#04101F',
               background: CARD.accent,
             }}
@@ -99,78 +108,75 @@ const CareerCardFace = forwardRef(function CareerCardFace({ name, avatarUrl, gen
           </span>
         </div>
 
-        {/* Right: details */}
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', minWidth: 0 }}>
+        {/* Right: details in three zones — logos (top), main (centered), meta (bottom) */}
+        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', minWidth: 0, height: '100%' }}>
           {/* Top row: eyebrow + flag + DEWA chip */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, color: CARD.eyebrow }}>
+            <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 3.5, color: CARD.eyebrow }}>
               DREAM CAREER ID
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <img src={uaeFlag} alt="UAE" style={{ height: 20, width: 30, borderRadius: 3, objectFit: 'cover' }} />
-              <span style={{ display: 'inline-flex', background: '#fff', borderRadius: 7, padding: '3px 6px' }}>
-                <img src={dewaLogo} alt="DEWA" style={{ height: 20, width: 'auto' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <img src={uaeFlag} alt="UAE" style={{ height: 28, width: 42, borderRadius: 4, objectFit: 'cover' }} />
+              <span style={{ display: 'inline-flex', background: '#fff', borderRadius: 9, padding: '5px 8px' }}>
+                <img src={dewaLogo} alt="DEWA" style={{ height: 28, width: 'auto' }} />
               </span>
             </div>
           </div>
 
-          {/* Name */}
-          <p
-            style={{
-              fontFamily: '"Lilita One", sans-serif',
-              fontSize: 34,
-              lineHeight: 1.1,
-              marginTop: 10,
-              color: CARD.white,
-              letterSpacing: 0.5,
-            }}
-          >
-            {name}
-          </p>
+          {/* Middle: name / career / designation / workplace / message — centered */}
+          <div style={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+            <p
+              style={{
+                fontFamily: '"Lilita One", sans-serif',
+                fontSize: 48,
+                lineHeight: 1.02,
+                color: CARD.white,
+                letterSpacing: 0.5,
+              }}
+            >
+              {name}
+            </p>
 
-          {/* Future career (hero accent) */}
-          <p
-            style={{
-              fontFamily: '"Lilita One", sans-serif',
-              fontSize: 22,
-              lineHeight: 1.15,
-              marginTop: 2,
-              color: CARD.accent,
-            }}
-          >
-            {career.title}
-          </p>
+            <p
+              style={{
+                fontFamily: '"Lilita One", sans-serif',
+                fontSize: 30,
+                lineHeight: 1.1,
+                marginTop: 4,
+                color: CARD.accent,
+              }}
+            >
+              {career.title}
+            </p>
 
-          {/* Designation + workplace */}
-          <p style={{ fontSize: 13, fontWeight: 600, color: CARD.muted, marginTop: 6, lineHeight: 1.4 }}>
-            {career.designation}
-          </p>
-          <p style={{ fontSize: 13, fontWeight: 700, color: CARD.white, marginTop: 2, lineHeight: 1.4 }}>
-            <span style={{ color: CARD.accent }}>◈</span> {career.workplace}, UAE
-          </p>
+            <p style={{ fontSize: 15, fontWeight: 600, color: CARD.muted, marginTop: 12, lineHeight: 1.4 }}>
+              {career.designation}
+            </p>
+            <p style={{ fontSize: 15, fontWeight: 700, color: CARD.white, marginTop: 3, lineHeight: 1.4 }}>
+              <span style={{ color: CARD.accent }}>◈</span> {career.workplace}, UAE
+            </p>
 
-          {/* Divider */}
-          <div
-            style={{
-              height: 2,
-              marginTop: 12,
-              marginBottom: 10,
-              borderRadius: 2,
-              background: 'linear-gradient(90deg, transparent, #00B7FF, #FF30FF, transparent)',
-            }}
-          />
+            <div
+              style={{
+                height: 2,
+                marginTop: 16,
+                marginBottom: 14,
+                borderRadius: 2,
+                background: 'linear-gradient(90deg, transparent, #00B7FF, #FF30FF, transparent)',
+              }}
+            />
 
-          {/* Message */}
-          <p style={{ fontSize: 12, fontStyle: 'italic', color: '#C7D3E8', lineHeight: 1.45 }}>
-            {career.message}
-          </p>
+            <p style={{ fontSize: 15, fontStyle: 'italic', color: '#C7D3E8', lineHeight: 1.5 }}>
+              {career.message}
+            </p>
+          </div>
 
-          {/* Footer meta */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 'auto', paddingTop: 12 }}>
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, color: CARD.muted }}>
+          {/* Bottom meta */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: CARD.muted }}>
               CAREER No. {careerId}
             </span>
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, color: CARD.muted }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: CARD.muted }}>
               ISSUED {issuedOn}
             </span>
           </div>

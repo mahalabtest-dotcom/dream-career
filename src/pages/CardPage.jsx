@@ -42,7 +42,9 @@ function CardPage() {
       }
     }
 
-    const canvas = await html2canvas(captureRef.current, { scale: 2, backgroundColor: '#F4FBF3' })
+    // Transparent background so the rounded card corners stay clean in the PNG
+    // (the dark card fills the rest).
+    const canvas = await html2canvas(captureRef.current, { scale: 2, backgroundColor: null })
     return canvas.toDataURL('image/png')
   }
 

@@ -2,27 +2,25 @@ import { forwardRef, useMemo } from 'react'
 import dewaLogo from '../assets/dewa-logo.png'
 import uaeFlag from '../assets/uae-flag.png'
 
-// DEWA brand colors
-export const DEWA_GREEN = '#34B233'
-export const DEWA_DARK_GREEN = '#008542'
-const INK = '#0D2E1A'
-const CARD_BG = '#F3FAF2'
+// Premium "aurora" palette (shared with the card back). Deliberately NOT the
+// DEWA-green theme — a dark navy panel with a cyan→violet→magenta glow border.
+export const CARD = {
+  border: 'linear-gradient(120deg, #00B7FF 0%, #8B5CF6 50%, #FF30FF 100%)',
+  panel: 'linear-gradient(155deg, #12294D 0%, #0A1730 55%, #070F24 100%)',
+  white: '#F8FAFC',
+  muted: '#93A5C4',
+  accent: '#38E0FF',
+  eyebrow: '#7FB6FF',
+  radius: 22,
+}
 
-// This face is rendered twice: once inside the interactive flip card, and once
-// off-screen (no 3D transform ancestors) purely for html2canvas to capture —
-// html2canvas cannot correctly render elements inside a `transform-style:
-// preserve-3d` / `backface-visibility: hidden` context, which caused ghosted
-// text and a broken avatar image in captured downloads. This component itself
-// never sets those properties.
-//
-// html2canvas-safety rules applied throughout:
-//   - explicit hex/rgba colors only (Tailwind v4's oklch()/color-mix() break it)
-//   - generous line-height + NO overflow:hidden on text (baseline clipping bug)
-//   - fonts awaited (document.fonts.ready) before capture in CardPage.jsx
-//   - all images are bundled same-origin assets
+// Faint corner "glow blooms" for depth — radial-gradients render fine in
+// html2canvas (conic-gradient does not, so it's used only in the live-only
+// animated halo in CareerCard.jsx, never in this captured face).
+const BLOOMS =
+  'radial-gradient(60% 55% at 12% 0%, rgba(0,183,255,0.20), transparent 70%), radial-gradient(55% 60% at 100% 100%, rgba(255,48,255,0.16), transparent 70%)'
 
-// Faint green "security paper" crosshatch — evokes an ID's guilloche pattern.
-export const GUILLOCHE = `repeating-linear-gradient(22deg, rgba(0,133,66,0.05) 0 1px, transparent 1px 9px), repeating-linear-gradient(-22deg, rgba(0,133,66,0.05) 0 1px, transparent 1px 9px)`
+const FACE_CROP = { objectFit: 'cover', objectPosition: '50% 14%' }
 
 function generateCareerId(seed) {
   let hash = 0
@@ -39,161 +37,144 @@ function formatDate(date) {
   return `${dd}/${mm}/${date.getFullYear()}`
 }
 
-function Field({ label, value, valueColor = INK, big = false }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, lineHeight: 1.35, minHeight: big ? 26 : 22 }}>
-      <span
-        style={{
-          color: DEWA_DARK_GREEN,
-          fontSize: 9.5,
-          fontWeight: 800,
-          textTransform: 'uppercase',
-          letterSpacing: 0.4,
-          width: 78,
-          flexShrink: 0,
-        }}
-      >
-        {label}
-      </span>
-      <span style={{ color: valueColor, fontSize: big ? 17 : 13.5, fontWeight: 700 }}>{value}</span>
-    </div>
-  )
-}
-
 const CareerCardFace = forwardRef(function CareerCardFace({ name, avatarUrl, gender, career }, ref) {
   const careerId = useMemo(() => generateCareerId(`${name}-${career.title}`), [name, career.title])
   const issuedOn = useMemo(() => formatDate(new Date()), [])
-  const sexLabel = gender === 'girl' ? 'Female' : 'Male'
 
   return (
+    // Outer = the glowing gradient border (created by 3px padding over a gradient)
     <div
       ref={ref}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
         height: '100%',
         width: '100%',
-        overflow: 'hidden',
-        background: CARD_BG,
-        backgroundImage: GUILLOCHE,
-        borderRadius: 20,
-        border: `4px solid ${DEWA_DARK_GREEN}`,
-        boxShadow: '6px 6px 0 rgba(13, 7, 36, 0.35)',
+        padding: 3,
+        borderRadius: CARD.radius,
+        background: CARD.border,
+        boxShadow: '0 18px 40px rgba(4, 10, 30, 0.55)',
       }}
     >
-      {/* Header band */}
+      {/* Inner dark panel */}
       <div
         style={{
+          position: 'relative',
+          height: '100%',
+          width: '100%',
+          overflow: 'hidden',
+          borderRadius: CARD.radius - 3,
+          background: CARD.panel,
+          backgroundImage: `${BLOOMS}, ${CARD.panel}`,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '10px 16px',
-          background: `linear-gradient(90deg, ${DEWA_DARK_GREEN} 0%, ${DEWA_GREEN} 100%)`,
+          gap: 22,
+          padding: 24,
+          color: CARD.white,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img
-            src={dewaLogo}
-            alt="DEWA logo"
-            style={{ height: 46, width: 'auto', background: '#fff', borderRadius: 8, padding: 4 }}
-          />
-          <div style={{ lineHeight: 1.15 }}>
-            <p style={{ fontFamily: '"Lilita One", sans-serif', fontSize: 22, color: '#FFF6E9', letterSpacing: 0.5 }}>
-              DREAM CAREER ID
-            </p>
-            <p style={{ fontSize: 10, fontWeight: 700, color: '#EAFBEA' }}>
-              Youth Committee · Dubai, United Arab Emirates
-            </p>
-          </div>
-        </div>
-        <img
-          src={uaeFlag}
-          alt="UAE flag"
-          style={{ height: 34, width: 51, borderRadius: 4, border: '2px solid #FFFFFF', objectFit: 'cover' }}
-        />
-      </div>
-
-      {/* Body */}
-      <div style={{ display: 'flex', flex: 1, gap: 14, padding: 16 }}>
-        {/* Left: portrait photo + badge */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+        {/* Left: avatar with gradient ring + glow, and a tag */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flexShrink: 0 }}>
           <div
             style={{
-              height: 140,
-              width: 116,
-              overflow: 'hidden',
-              background: '#fff',
-              border: `3px solid ${DEWA_DARK_GREEN}`,
-              borderRadius: 12,
+              padding: 3,
+              borderRadius: 18,
+              background: CARD.border,
+              boxShadow: '0 0 22px rgba(0,183,255,0.35)',
             }}
           >
-            <img src={avatarUrl} alt={`${name}'s avatar`} style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: '50% 15%' }} />
+            <div style={{ height: 150, width: 118, overflow: 'hidden', borderRadius: 15, background: '#0A1730' }}>
+              <img src={avatarUrl} alt={`${name}'s avatar`} style={{ height: '100%', width: '100%', ...FACE_CROP }} />
+            </div>
           </div>
           <span
             style={{
               borderRadius: 999,
-              padding: '2px 12px',
+              padding: '3px 14px',
               fontSize: 10,
               fontWeight: 800,
-              background: DEWA_GREEN,
-              color: '#FFF6E9',
+              letterSpacing: 1.5,
+              color: '#04101F',
+              background: CARD.accent,
             }}
           >
             EXPLORER
           </span>
         </div>
 
-        {/* Center: fields */}
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', gap: 3 }}>
-          <Field label="Career No." value={careerId} valueColor={DEWA_DARK_GREEN} big />
-          <Field label="Name" value={name} />
-          <Field label="Future Career" value={career.title} />
-          <Field label="Designation" value={career.designation} />
-          <Field label="Workplace" value={`${career.workplace}, UAE`} />
-          <div style={{ display: 'flex', gap: 24 }}>
-            <Field label="Issued" value={issuedOn} />
-            <Field label="Sex" value={sexLabel} />
+        {/* Right: details */}
+        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', minWidth: 0 }}>
+          {/* Top row: eyebrow + flag + DEWA chip */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, color: CARD.eyebrow }}>
+              DREAM CAREER ID
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img src={uaeFlag} alt="UAE" style={{ height: 20, width: 30, borderRadius: 3, objectFit: 'cover' }} />
+              <span style={{ display: 'inline-flex', background: '#fff', borderRadius: 7, padding: '3px 6px' }}>
+                <img src={dewaLogo} alt="DEWA" style={{ height: 20, width: 'auto' }} />
+              </span>
+            </div>
           </div>
-          <Field label="Expires" value="Never — dream big!" valueColor={DEWA_GREEN} />
-        </div>
 
-        {/* Right: official "verified" seal to fill space like an ID hologram */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flexShrink: 0, width: 78 }}>
-          <div
+          {/* Name */}
+          <p
             style={{
-              height: 76,
-              width: 76,
-              borderRadius: 999,
-              border: `3px dashed ${DEWA_GREEN}`,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(52,178,51,0.08)',
+              fontFamily: '"Lilita One", sans-serif',
+              fontSize: 34,
               lineHeight: 1.1,
+              marginTop: 10,
+              color: CARD.white,
+              letterSpacing: 0.5,
             }}
           >
-            <span style={{ fontSize: 26 }}>⭐</span>
-            <span style={{ fontSize: 7.5, fontWeight: 800, color: DEWA_DARK_GREEN, letterSpacing: 0.3 }}>FUTURE</span>
-            <span style={{ fontSize: 7.5, fontWeight: 800, color: DEWA_DARK_GREEN, letterSpacing: 0.3 }}>STAR</span>
+            {name}
+          </p>
+
+          {/* Future career (hero accent) */}
+          <p
+            style={{
+              fontFamily: '"Lilita One", sans-serif',
+              fontSize: 22,
+              lineHeight: 1.15,
+              marginTop: 2,
+              color: CARD.accent,
+            }}
+          >
+            {career.title}
+          </p>
+
+          {/* Designation + workplace */}
+          <p style={{ fontSize: 13, fontWeight: 600, color: CARD.muted, marginTop: 6, lineHeight: 1.4 }}>
+            {career.designation}
+          </p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: CARD.white, marginTop: 2, lineHeight: 1.4 }}>
+            <span style={{ color: CARD.accent }}>◈</span> {career.workplace}, UAE
+          </p>
+
+          {/* Divider */}
+          <div
+            style={{
+              height: 2,
+              marginTop: 12,
+              marginBottom: 10,
+              borderRadius: 2,
+              background: 'linear-gradient(90deg, transparent, #00B7FF, #FF30FF, transparent)',
+            }}
+          />
+
+          {/* Message */}
+          <p style={{ fontSize: 12, fontStyle: 'italic', color: '#C7D3E8', lineHeight: 1.45 }}>
+            {career.message}
+          </p>
+
+          {/* Footer meta */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 'auto', paddingTop: 12 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, color: CARD.muted }}>
+              CAREER No. {careerId}
+            </span>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, color: CARD.muted }}>
+              ISSUED {issuedOn}
+            </span>
           </div>
         </div>
-      </div>
-
-      {/* Footer message */}
-      <div
-        style={{
-          padding: '8px 16px',
-          textAlign: 'center',
-          fontSize: 11,
-          fontWeight: 600,
-          fontStyle: 'italic',
-          color: DEWA_DARK_GREEN,
-          borderTop: '2px solid rgba(52,178,51,0.3)',
-          lineHeight: 1.4,
-        }}
-      >
-        {career.message}
       </div>
     </div>
   )

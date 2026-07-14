@@ -77,3 +77,10 @@ button:active {
     transform: rotate(3deg);
   }
 }
+
+/* Rotating glow halo behind the career card (live view only, not captured) */
+@keyframes card-halo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

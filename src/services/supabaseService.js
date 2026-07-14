@@ -5,9 +5,17 @@ const CARDS_TABLE = 'career_cards'
 
 let client = null
 
+// Strip anything outside printable ASCII (BOM, stray whitespace, control chars)
+// that can sneak into an env var — the Supabase client sends these as HTTP
+// header values, and a browser rejects non-Latin-1 headers with "String
+// contains non ISO-8859-1 code point". URLs/keys are always printable ASCII.
+function sanitizeSecret(value) {
+  return (value ?? '').replace(/[^\x21-\x7E]/g, '')
+}
+
 function getClient() {
-  const url = import.meta.env.VITE_SUPABASE_URL
-  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+  const url = sanitizeSecret(import.meta.env.VITE_SUPABASE_URL)
+  const anonKey = sanitizeSecret(import.meta.env.VITE_SUPABASE_ANON_KEY)
 
   if (!url || !anonKey || url.includes('your_supabase') || anonKey.includes('your_supabase')) {
     throw new Error(

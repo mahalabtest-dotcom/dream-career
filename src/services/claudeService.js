@@ -51,8 +51,16 @@ function parseCareers(responseText) {
   return parsed.careers
 }
 
-export async function getCareerRecommendations(skillLabels, { timeoutMs = 15000 } = {}) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
+// Strip anything outside printable ASCII (BOM, stray whitespace, control chars)
+// that can sneak into an env var — a browser's Headers API rejects non-Latin-1
+// header values with "String contains non ISO-8859-1 code point", which silently
+// forced the AI fallback. API keys are always printable ASCII, so this is safe.
+function sanitizeSecret(value) {
+  return (value ?? '').replace(/[^\x21-\x7E]/g, '')
+}
+
+export async function getCareerRecommendations(skillLabels, { timeoutMs = 30000 } = {}) {
+  const apiKey = sanitizeSecret(import.meta.env.VITE_ANTHROPIC_API_KEY)
   if (!apiKey) {
     throw new Error('Missing VITE_ANTHROPIC_API_KEY')
   }

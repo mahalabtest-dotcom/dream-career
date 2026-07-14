@@ -58,6 +58,7 @@ function Careers() {
   const [careers, setCareers] = useState([])
   const [loading, setLoading] = useState(true)
   const [usingFallback, setUsingFallback] = useState(false)
+  const [errorInfo, setErrorInfo] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [showConfetti, setShowConfetti] = useState(false)
 
@@ -70,6 +71,7 @@ function Careers() {
   const loadCareers = useCallback(async () => {
     setLoading(true)
     setUsingFallback(false)
+    setErrorInfo('')
     setSelectedIndex(null)
 
     const skillLabels = selectedSkills
@@ -83,6 +85,7 @@ function Careers() {
       // Surface why the AI call fell back (missing key, CORS, timeout, parse
       // error) so it's diagnosable in the browser console.
       console.error('Claude career recommendation failed, using fallback:', err)
+      setErrorInfo(`${err?.name || 'Error'}: ${err?.message || 'unknown'}${err?.status ? ` (HTTP ${err.status})` : ''}`)
       setCareers(getFallbackCareers(selectedSkills, SKILLS))
       setUsingFallback(true)
     } finally {
@@ -121,6 +124,11 @@ function Careers() {
           <p className="text-sm font-bold text-coral">
             Oops! Our AI is taking a space nap — here are some stellar picks for you! 💤
           </p>
+          {errorInfo && (
+            <p className="max-w-xl rounded-lg bg-ink/40 px-3 py-1 font-mono text-xs text-cream">
+              debug: {errorInfo}
+            </p>
+          )}
           <button
             type="button"
             onClick={loadCareers}

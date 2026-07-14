@@ -40,7 +40,12 @@ function Welcome() {
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             className="h-44 w-44 overflow-hidden rounded-full border-4 border-cream bg-white shadow-[0_0_40px_rgba(179,136,255,0.7)]"
           >
-            <img src={avatarUrl} alt={`${name}'s avatar`} className="h-full w-full object-cover" />
+            <img
+              src={avatarUrl}
+              alt={`${name}'s avatar`}
+              className="h-full w-full object-cover"
+              style={{ objectPosition: '50% 12%' }}
+            />
           </motion.div>
         )}
 

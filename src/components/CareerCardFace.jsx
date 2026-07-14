@@ -127,7 +127,7 @@ const CareerCardFace = forwardRef(function CareerCardFace({ name, avatarUrl, gen
               borderRadius: 12,
             }}
           >
-            <img src={avatarUrl} alt={`${name}'s avatar`} style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
+            <img src={avatarUrl} alt={`${name}'s avatar`} style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: '50% 15%' }} />
           </div>
           <span
             style={{

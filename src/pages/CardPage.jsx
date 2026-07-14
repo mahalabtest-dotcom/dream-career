@@ -75,7 +75,10 @@ function CardPage() {
       const dataUrl = await captureFrontImage()
       await saveCareerCard({ imageDataUrl: dataUrl, name, career: chosenCareer })
       setSaveState('saved')
-    } catch {
+    } catch (err) {
+      // Surface the real reason in the console so save failures are diagnosable
+      // (missing/placeholder env vars, RLS policy, network, etc.).
+      console.error('Save to Supabase failed:', err)
       setSaveState('error')
     }
   }
@@ -104,7 +107,7 @@ function CardPage() {
           display:none/opacity:0 so html2canvas still renders it fully. */}
       <div
         aria-hidden="true"
-        style={{ position: 'fixed', top: 0, left: -9999, width: 640, aspectRatio: '8 / 5', pointerEvents: 'none' }}
+        style={{ position: 'fixed', top: 0, left: -9999, width: 680, aspectRatio: '8 / 5', pointerEvents: 'none' }}
       >
         <CareerCardFace ref={captureRef} name={name} avatarUrl={avatarUrl} gender={gender} career={chosenCareer} />
       </div>

@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 const BACK_MAP = {
   '/welcome': '/',
@@ -14,14 +15,17 @@ function BackButton() {
   if (!backTo) return null
 
   return (
-    <button
+    <motion.button
       type="button"
       aria-label="Go back to the previous step"
       onClick={() => navigate(backTo)}
-      className="fixed left-3 top-3 z-50 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-ink bg-cream text-lg font-extrabold text-ink shadow-sticker-sm"
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.94 }}
+      className="fixed left-4 top-4 z-50 flex items-center gap-1.5 rounded-full border-4 border-ink bg-cream px-4 py-2 font-display text-base text-ink shadow-sticker-sm sm:px-5 sm:text-lg"
     >
-      ←
-    </button>
+      <span aria-hidden="true">←</span>
+      <span>Back</span>
+    </motion.button>
   )
 }
 

@@ -79,7 +79,10 @@ function Careers() {
     try {
       const result = await getCareerRecommendations(skillLabels)
       setCareers(result)
-    } catch {
+    } catch (err) {
+      // Surface why the AI call fell back (missing key, CORS, timeout, parse
+      // error) so it's diagnosable in the browser console.
+      console.error('Claude career recommendation failed, using fallback:', err)
       setCareers(getFallbackCareers(selectedSkills, SKILLS))
       setUsingFallback(true)
     } finally {

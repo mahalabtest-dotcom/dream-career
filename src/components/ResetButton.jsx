@@ -16,14 +16,17 @@ function ResetButton() {
 
   return (
     <>
-      <button
+      <motion.button
         type="button"
         aria-label="Restart the mission"
         onClick={() => setConfirmOpen(true)}
-        className="fixed right-3 top-3 z-50 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-ink bg-cream text-lg shadow-sticker-sm"
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.94 }}
+        className="fixed right-4 top-4 z-50 flex items-center gap-1.5 rounded-full border-4 border-ink bg-sunny px-4 py-2 font-display text-base text-ink shadow-sticker-sm sm:px-5 sm:text-lg"
       >
+        <span>Restart</span>
         <span aria-hidden="true">🔄</span>
-      </button>
+      </motion.button>
 
       <AnimatePresence>
         {confirmOpen && (

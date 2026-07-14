@@ -1,12 +1,13 @@
-import CareerCardFace, { DEWA_DARK_GREEN, DEWA_GREEN, WATERMARK_STRIPES } from './CareerCardFace'
+import dewaLogo from '../assets/dewa-logo.png'
+import CareerCardFace, { DEWA_DARK_GREEN, DEWA_GREEN, GUILLOCHE } from './CareerCardFace'
 
-const CARD_BG = '#F4FBF3'
+const CARD_BG = '#F3FAF2'
 const INK = '#0D2E1A'
 
 function CareerCard({ flipped, onFlip, name, avatarUrl, gender, career }) {
   return (
     <div
-      className="relative mx-auto w-full max-w-[640px] cursor-pointer select-none"
+      className="relative mx-auto w-full max-w-[680px] cursor-pointer select-none"
       style={{ aspectRatio: '8 / 5', perspective: 1600 }}
       onClick={onFlip}
       role="button"
@@ -30,33 +31,50 @@ function CareerCard({ flipped, onFlip, name, avatarUrl, gender, career }) {
 
         {/* BACK */}
         <div
-          className="absolute inset-0 flex h-full w-full flex-col gap-3 overflow-hidden p-4"
+          className="absolute inset-0 flex h-full w-full flex-col overflow-hidden p-5"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
             background: CARD_BG,
-            backgroundImage: WATERMARK_STRIPES,
-            borderRadius: 22,
+            backgroundImage: GUILLOCHE,
+            borderRadius: 20,
             border: `4px solid ${DEWA_DARK_GREEN}`,
             boxShadow: '6px 6px 0 rgba(13, 7, 36, 0.35)',
           }}
         >
-          <h2 className="text-center font-display text-lg" style={{ color: DEWA_DARK_GREEN }}>
-            How to become a {career.title}! 🗺️
-          </h2>
-          <ul className="grid flex-1 grid-cols-2 gap-2 text-xs font-semibold" style={{ color: INK }}>
-            {career.tips.map((tip) => (
+          <div className="mb-3 flex items-center justify-center gap-2">
+            <img
+              src={dewaLogo}
+              alt=""
+              className="h-7 w-auto rounded bg-white p-1"
+            />
+            <h2 className="font-display text-lg md:text-xl" style={{ color: DEWA_DARK_GREEN }}>
+              How to become a {career.title}!
+            </h2>
+          </div>
+          <ul className="grid flex-1 grid-cols-2 gap-3 text-sm font-semibold" style={{ color: INK }}>
+            {career.tips.map((tip, index) => (
               <li
                 key={tip}
-                className="flex items-center rounded-xl border-2 p-2"
-                style={{ borderColor: DEWA_GREEN, background: '#FFFFFFAA' }}
+                className="flex items-center gap-2 rounded-xl p-3"
+                style={{
+                  border: `2px solid ${DEWA_GREEN}`,
+                  background: '#FFFFFFCC',
+                }}
               >
-                {tip}
+                <span
+                  className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs font-extrabold text-white"
+                  style={{ background: DEWA_GREEN }}
+                  aria-hidden="true"
+                >
+                  {index + 1}
+                </span>
+                <span className="leading-snug">{tip}</span>
               </li>
             ))}
           </ul>
-          <p className="text-center text-[10px] font-bold" style={{ color: DEWA_DARK_GREEN }}>
-            ← See my card
+          <p className="mt-3 text-center text-xs font-bold" style={{ color: DEWA_DARK_GREEN }}>
+            ← Tap to see your card
           </p>
         </div>
       </div>
